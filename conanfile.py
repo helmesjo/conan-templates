@@ -4,10 +4,10 @@
 from conans import ConanFile, CMake, tools, AutoToolsBuildEnvironment
 import os
 
-
+# Building Thrift for C++: https://github.com/apache/thrift/blob/cecee50308fc7e6f77f55b3fd906c1c6c471fa2f/lib/cpp/README.md
 class ThriftConan(ConanFile):
     name = "thrift"
-    version = "0.12.0"
+    version = "0.13.0"
     description =   "Thrift is a lightweight, \
                     language-independent software \
                     stack with an associated code \
@@ -38,11 +38,6 @@ class ThriftConan(ConanFile):
         "with_qt4": [True, False],
         "with_qt5": [True, False],
         "with_openssl": [True, False],
-        "with_boost_functional": [True, False],
-        "with_boost_smart_ptr": [True, False],
-        "with_boost_static": [True, False],
-        "with_boostthreads": [True, False],
-        "with_stdthreads": [True, False],
         "with_c_glib": [True, False],
         "with_cpp": [True, False],
         "with_java": [True, False],
@@ -64,11 +59,6 @@ class ThriftConan(ConanFile):
         "with_qt4=False",
         "with_qt5=False",
         "with_openssl=True",
-        "with_boost_functional=False",
-        "with_boost_smart_ptr=False",
-        "with_boost_static=False",
-        "with_boostthreads=False",
-        "with_stdthreads=True",
         "with_c_glib=False",
         "with_cpp=True",
         "with_java=False",
@@ -90,9 +80,9 @@ class ThriftConan(ConanFile):
         if self.settings.compiler != 'Visual Studio' and self.options.shared:
             self.options['boost'].add_option('fPIC', 'True')
 
-        # See: https://github.com/apache/thrift/blob/f12cacf56145e2c8f0d4429694fedf5453648089/build/cmake/DefinePlatformSpecifc.cmake
+        # Thrift supports shared libs but it requires some work with this recipe, so skipping for now.
         if self.settings.os == "Windows" and self.options.shared:
-            self.output.warn("Thrift does not currently support shared libs on windows. Forcing static...")
+            self.output.warn("Thrift supports shared libs but it requires some work with this recipe, so forcing static...")
             self.options.shared = False
 
     def requirements(self):
@@ -132,12 +122,6 @@ class ThriftConan(ConanFile):
         for option, value in self.options.items():
             add_cmake_option(option, value)
 
-        # Make thrift use correct thread lib (see repo/build/cmake/config.h.in)
-        add_cmake_option("USE_STD_THREAD", self.options.with_stdthreads)
-        add_cmake_option("USE_BOOST_THREAD", self.options.with_boostthreads)
-
-        add_cmake_option("WITH_SHARED_LIB", self.options.shared)
-        add_cmake_option("WITH_STATIC_LIB", not self.options.shared)
         cmake.definitions["BOOST_ROOT"] = self.deps_cpp_info['boost'].rootpath
 
         # Make optional libs "findable"
