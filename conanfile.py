@@ -87,10 +87,10 @@ class ThriftConan(ConanFile):
 
     def requirements(self):
         if self.settings.os == 'Windows':
-            self.requires("winflexbison/2.5.14@helmesjo/stable")
+            self.requires("winflexbison/2.5.20@bincrafters/stable")
         else:
-            self.requires("flex/2.6.4@bincrafters/stable")
-            self.requires("bison/3.0.4@bincrafters/stable")
+            self.requires("flex_installer/2.6.4@bincrafters/stable")
+            self.requires("bison_installer/3.3.2@bincrafters/stable")
             
         if self.options.with_openssl:
             self.requires("OpenSSL/1.1.0g@conan/stable")
