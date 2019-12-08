@@ -93,11 +93,11 @@ class ThriftConan(ConanFile):
             self.requires("bison_installer/3.3.2@bincrafters/stable")
             
         if self.options.with_openssl:
-            self.requires("OpenSSL/1.1.0g@conan/stable")
+            self.requires("OpenSSL/1.1.1c@conan/stable")
         if self.options.with_zlib:
             self.requires("zlib/1.2.11@conan/stable")
         if self.options.with_libevent:
-            self.requires("libevent/2.0.22@bincrafters/stable")
+            self.requires("libevent/2.1.11@bincrafters/stable")
 
     def source(self):
         source_url = "https://github.com/apache/thrift"
@@ -143,7 +143,7 @@ class ThriftConan(ConanFile):
             self.output.info("Running {} tests".format(self.name))
             source_path = os.path.join(self.build_subfolder, self.source_subfolder)
             with tools.chdir(source_path):
-                self.run("ctest --build-config {}".format(self.settings.build_type))
+                self.run("ctest . --build-config {}".format(self.settings.build_type))
         
     def package(self):
         self.copy(pattern="LICENSE", dst="licenses", src=self.source_subfolder)
