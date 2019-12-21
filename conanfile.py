@@ -3,6 +3,22 @@
 
 from conans import ConanFile, CMake, tools, AutoToolsBuildEnvironment
 import os
+import re
+
+def replace(file, pattern, subst):
+    # Read contents from file as a single string
+    file_handle = open(file, 'r')
+    file_string = file_handle.read()
+    file_handle.close()
+
+    # Use RE package to allow for replacement (also allowing for (multiline) REGEX)
+    file_string = (re.sub(pattern, "{} # <-- Line edited by conan package -->".format(subst), file_string))
+
+    # Write contents to file.
+    # Using mode 'w' truncates the file.
+    file_handle = open(file, 'w')
+    file_handle.write(file_string)
+    file_handle.close()
 
 # Building Thrift for C++: https://github.com/apache/thrift/blob/cecee50308fc7e6f77f55b3fd906c1c6c471fa2f/lib/cpp/README.md
 class ThriftConan(ConanFile):
@@ -106,6 +122,10 @@ class ThriftConan(ConanFile):
 
         #Rename to "source_subfolder" is a convention to simplify later steps
         os.rename(extracted_dir, self.source_subfolder)
+
+        define_options_cmakelist_path = os.path.join(self.source_subfolder ,"build/cmake/DefineOptions.cmake")
+        # Stop thrift from incorrectly overriding 'BUILD_SHARED_LIBS' (to allow building static on Linux & macOS)
+        replace(define_options_cmakelist_path, r"(.*CMAKE_DEPENDENT_OPTION\(BUILD_SHARED_LIBS)", r"# \1")
 
     def configure_cmake(self):
         def add_cmake_option(option, value):
