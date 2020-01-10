@@ -42,7 +42,7 @@ class ThriftConan(ConanFile):
 
     # http://thrift.apache.org/docs/install/
     requires = (
-        "boost/1.71.0@conan/stable",
+        "boost/1.71.0",
     )
 
     settings = "os", "arch", "compiler", "build_type"
@@ -109,11 +109,11 @@ class ThriftConan(ConanFile):
             self.requires("bison_installer/3.3.2@bincrafters/stable")
             
         if self.options.with_openssl:
-            self.requires("OpenSSL/1.1.1c@conan/stable")
+            self.requires("openssl/1.1.1d")
         if self.options.with_zlib:
-            self.requires("zlib/1.2.11@conan/stable")
+            self.requires("zlib/1.2.11")
         if self.options.with_libevent:
-            self.requires("libevent/2.1.11@bincrafters/stable")
+            self.requires("libevent/2.1.11")
 
     def source(self):
         source_url = "https://github.com/apache/thrift"
@@ -146,7 +146,7 @@ class ThriftConan(ConanFile):
 
         # Make optional libs "findable"
         if self.options.with_openssl:
-            cmake.definitions["OPENSSL_ROOT_DIR"] = self.deps_cpp_info['OpenSSL'].rootpath
+            cmake.definitions["OPENSSL_ROOT_DIR"] = self.deps_cpp_info['openssl'].rootpath
         if self.options.with_zlib:
             cmake.definitions["ZLIB_ROOT"] = self.deps_cpp_info['zlib'].rootpath
         if self.options.with_libevent:
