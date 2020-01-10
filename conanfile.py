@@ -42,7 +42,7 @@ class ThriftConan(ConanFile):
 
     # http://thrift.apache.org/docs/install/
     requires = (
-        "boost/1.71.0",
+        "boost/1.71.0@conan/stable",
     )
 
     settings = "os", "arch", "compiler", "build_type"
