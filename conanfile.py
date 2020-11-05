@@ -42,7 +42,7 @@ class ThriftConan(ConanFile):
 
     # http://thrift.apache.org/docs/install/
     requires = (
-        "boost/1.71.0",
+        "boost/1.73.0",
     )
 
     settings = "os", "arch", "compiler", "build_type"
@@ -86,6 +86,7 @@ class ThriftConan(ConanFile):
         "build_testing=False", # Currently fails if 'True' because of too recent boost::test version (?) in package
         "build_examples=False",
         "build_tutorials=False",
+        "boost:header_only=True",
     )
 
     def config_options(self):
@@ -95,8 +96,6 @@ class ThriftConan(ConanFile):
     def configure(self):
         if self.settings.compiler != 'Visual Studio' and self.options.shared:
             self.options['boost'].add_option('fPIC', 'True')
-
-        self.options['boost'].header_only = True
 
         # Thrift supports shared libs but it requires some work with this recipe, so skipping for now.
         if self.settings.os == "Windows" and self.options.shared:
