@@ -96,6 +96,8 @@ class ThriftConan(ConanFile):
         if self.settings.compiler != 'Visual Studio' and self.options.shared:
             self.options['boost'].add_option('fPIC', 'True')
 
+        self.options['boost'].header_only = True
+
         # Thrift supports shared libs but it requires some work with this recipe, so skipping for now.
         if self.settings.os == "Windows" and self.options.shared:
             self.output.warn("Thrift supports shared libs but it requires some work with this recipe, so forcing static...")
